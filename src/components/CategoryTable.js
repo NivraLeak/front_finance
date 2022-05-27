@@ -1,23 +1,32 @@
 import React from 'react';
 import {Table,TableContainer, TableHead, TableCell,TableBody, TableRow} from '@material-ui/core';
-import ReactDOM from 'react-dom';
+import {Edit,Delete} from "@material-ui/icons"
+
+
 function CategoryTable(props) {
     const {categoryData} = props;
     return (
-            <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"15%"}}>
+            <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"20%"}}>
                 <Table >
-                    <TableHead>
+                    <TableHead style={{width:"100px"}}>
                         <TableRow>
-                            <TableCell>Category</TableCell>
+                            <TableCell align={"center"}>Category</TableCell>
+                            <TableCell align={"center"}>Edit/Delete</TableCell>
                         </TableRow>
+                    </TableHead>
                         <TableBody>
                             {categoryData.map(consola => (
-                                <TableRow style={{backgroundColor:"red"}} key={consola.categoryId}>
-                                    <TableCell align={"center"} >{consola.name}</TableCell>
+                                <TableRow  key={consola.categoryId}>
+                                    <TableCell align={"center"}>{consola.name}</TableCell>
+                                    <TableCell align={"center"}>
+                                        <Edit></Edit>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <Delete></Delete>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
-                    </TableHead>
+
                 </Table>
             </TableContainer>
     );
