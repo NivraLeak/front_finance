@@ -2,16 +2,15 @@ import {API_HOST} from '../utils/Constants';
 
 export class CategoryController{
     constructor() {
-        this.name = "category";
+        this.name = "categories";
         this.getAllCategories = this.getAllCategories.bind(this);
     }
 
     getAllCategories = async () =>{
         try {
             const url = `${API_HOST+this.name}/getAll/`;
-            const response = await fetch(url,{method:'GET'});
-            const data = response.json();
-            return data;
+            const response = await fetch(url);
+            return response.json();
         }catch (e){
             throw e;
         }
