@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {CategoryController} from "./api/CategoryController";
 import CategoryTable from "./components/CategoryTable";
 import {makeStyles} from "@material-ui/core";
+import {FiscalPositionController} from "./api/FiscalPositionController";
 
 const useStyles = makeStyles(() => ({
   tableContainer:{
@@ -11,8 +12,10 @@ const useStyles = makeStyles(() => ({
 }))
 function App() {
   const [categoryData,setCategoryData] = useState([]);
+  const [fiscalPositionData, setFiscalPositionData] = useState([]);
   const [detectChange, setDetectChange] = useState(true);
   const categoryController = new CategoryController();
+  const fiscalPositionController = new FiscalPositionController();
   const styles = useStyles();
   const loadCategories = async () =>{
     try {
@@ -26,7 +29,18 @@ function App() {
       console.log("Error: ", e);
     }
   }
-
+  const loadFiscalPosition = async () =>{
+    try {
+      const response = await fiscalPositionController.getAllFiscalPosition();
+      const listFiscalPositions = [];
+      for await (const fiscalPosition of response.data){
+        listFiscalPositions.push(fiscalPosition);
+      }
+      setCategoryData(listFiscalPositions);
+    }catch (e){
+      console.log("Error: ", e);
+    }
+  }
 
   useEffect(() => {
     (async ()=>{

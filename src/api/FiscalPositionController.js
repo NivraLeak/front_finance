@@ -4,9 +4,9 @@ export class FiscalPositionController {
     constructor() {
         this.name = "position";
         this.getAllFiscalPosition = this.getAllFiscalPosition.bind(this);
-        this.addFiscalPosition = this.addFiscalPosition(this);
-        this.updateFiscalPosition = this.updateFiscalPosition(this);
-        this.deleteFiscalPosition = this.deleteFiscalPosition(this);
+        this.addFiscalPosition = this.addFiscalPosition.bind(this);
+        this.updateFiscalPosition = this.updateFiscalPosition.bind(this);
+        this.deleteFiscalPosition = this.deleteFiscalPosition.bind(this);
     }
 
     getAllFiscalPosition = async () =>{
