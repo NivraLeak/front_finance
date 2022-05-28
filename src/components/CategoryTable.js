@@ -49,12 +49,10 @@ function CategoryTable(props) {
     const {categoryData} = props;
     const styles = useStyles();
 
-    const postCategory = async (category) =>{
+    const postCategory = async () =>{
         try {
-            const response = await categoryController.addCategory(category);
-            response.then(value =>{
-                console.log("Value: " + value)
-            })
+            const response = await categoryController.addCategory(dataModal);
+            console.log("Respuesta: ", response)
         }catch (e){
             console.log("Error: ", e);
         }
@@ -66,10 +64,9 @@ function CategoryTable(props) {
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setDataModal(prevState => ({
-            ...prevState,
-            [name]:value
-        }));
+        setDataModal({
+            name: value
+        });
         console.log(dataModal);
     }
 
