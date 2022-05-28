@@ -1,15 +1,15 @@
 import {API_HOST} from '../utils/Constants';
 
-export class CategoryController{
+export class FiscalPositionController {
     constructor() {
-        this.name = "categories";
-        this.getAllCategories = this.getAllCategories.bind(this);
-        this.addCategory = this.addCategory.bind(this);
-        this.updateCategory = this.updateCategory(this);
-        this.deleteCategory = this.deleteCategory(this);
+        this.name = "position";
+        this.getAllFiscalPosition = this.getAllFiscalPosition.bind(this);
+        this.addFiscalPosition = this.addFiscalPosition(this);
+        this.updateFiscalPosition = this.updateFiscalPosition(this);
+        this.deleteFiscalPosition = this.deleteFiscalPosition(this);
     }
 
-    getAllCategories = async () =>{
+    getAllFiscalPosition = async () =>{
         try {
             const url = `${API_HOST+this.name}/getAll/`;
             const response = await fetch(url);
@@ -18,13 +18,12 @@ export class CategoryController{
             throw e;
         }
     }
-
-    addCategory = async (category) =>{
+    addFiscalPosition = async (fiscalPosition) =>{
         try {
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             const url = `${API_HOST+this.name}/create`;
-            const raw = JSON.stringify(category);
+            const raw = JSON.stringify(fiscalPosition);
 
             const  response = await fetch(url,{
                 method: 'POST',
@@ -37,13 +36,12 @@ export class CategoryController{
             throw e;
         }
     }
-
-    updateCategory = async (category, categoryId) => {
+    updateFiscalPosition = async (fiscalPosition, fiscalPositionId) => {
         try {
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            const url = `${API_HOST+this.name}/update/${categoryId}`;
-            const raw = JSON.stringify(category);
+            const url = `${API_HOST+this.name}/update/${fiscalPositionId}`;
+            const raw = JSON.stringify(fiscalPosition);
 
             const  response = await fetch(url,{
                 method: 'PUT',
@@ -56,12 +54,11 @@ export class CategoryController{
             throw e;
         }
     }
-
-    deleteCategory = async (categoryId) => {
+    deleteFiscalPosition = async (fiscalPositionId) => {
         try {
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            const url = `${API_HOST+this.name}/delete/${categoryId}`;
+            const url = `${API_HOST+this.name}/delete/${fiscalPositionId}`;
 
             const  response = await fetch(url,{
                 method: 'DELETE',
@@ -73,5 +70,5 @@ export class CategoryController{
             throw e;
         }
     }
-
 }
+

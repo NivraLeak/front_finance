@@ -69,6 +69,15 @@ function CategoryTable(props) {
         openCloseUpdateModal();
         setDetectChange(!detectChange);
     }
+    const deleteCategory = async (categoryId) =>{
+        try {
+            const response = await categoryController.deleteCategory(categoryId);
+            console.log("Respuesta: ", response);
+        }catch (e){
+            console.log("Error: ", e);
+        }
+        setDetectChange(!detectChange);
+    }
 
     const openCloseInputModal= () =>{
         setAddModalState(!addModalState);
@@ -133,7 +142,7 @@ function CategoryTable(props) {
                                     <TableCell align={"center"}>
                                         <Edit className={styles.icons} onClick={()=>{selectCategory(data,'Edit')}}></Edit>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Delete className={styles.icons} ></Delete>
+                                        <Delete className={styles.icons} onClick={()=>{deleteCategory(data.categoryId)}} ></Delete>
                                     </TableCell>
                                 </TableRow>
                             ))}
