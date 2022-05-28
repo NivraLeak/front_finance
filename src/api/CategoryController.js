@@ -5,8 +5,8 @@ export class CategoryController{
         this.name = "categories";
         this.getAllCategories = this.getAllCategories.bind(this);
         this.addCategory = this.addCategory.bind(this);
-        this.updateCategory = this.updateCategory(this);
-        this.deleteCategory = this.deleteCategory(this);
+        this.updateCategory = this.updateCategory.bind(this);
+        this.deleteCategory = this.deleteCategory.bind(this);
     }
 
     getAllCategories = async () =>{

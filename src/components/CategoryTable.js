@@ -48,10 +48,10 @@ function CategoryTable(props) {
     const {categoryData, setDetectChange,detectChange} = props;
     const styles = useStyles();
 
-    const postCategory = async () =>{
+    const addCategory = async () =>{
         try {
             const response = await categoryController.addCategory(addDataModal);
-            console.log("Respuesta: ", response);
+            console.log("Respuesta add Category: ", response);
         }catch (e){
             console.log("Error: ", e);
         }
@@ -93,10 +93,8 @@ function CategoryTable(props) {
                 [name]: value
             }
         ));
-        console.log(addDataModal);
     }
     const selectCategory = (data, caso) =>{
-        console.log("CLick",data);
         setAddDataModal(data);
         (caso === 'Edit')&& setUpdateModalState(true);
     }
@@ -106,7 +104,7 @@ function CategoryTable(props) {
             <TextField name="name" className={styles.inputMaterial} label="Nombre categoria" onChange={handleChange}/>
 
             <div align="right">
-                <Button color="primary" onClick={() => postCategory()}>Add</Button>
+                <Button color="primary" onClick={() => {addCategory()}}>Add</Button>
                 <Button onClick={() => openCloseInputModal()}>Cancelar</Button>
             </div>
         </div>
@@ -117,7 +115,7 @@ function CategoryTable(props) {
             <TextField name="name" className={styles.inputMaterial} label="Nombre categoria" onChange={handleChange} value={addDataModal&&addDataModal.name}/>
 
             <div align="right">
-                <Button color="primary" onClick={() =>updateCategory()}>Edit</Button>
+                <Button color="primary" onClick={()=>{updateCategory()}} >Edit</Button>
                 <Button onClick={() =>openCloseUpdateModal()}>Cancelar</Button>
             </div>
         </div>

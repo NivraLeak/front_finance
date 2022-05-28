@@ -20,7 +20,6 @@ function App() {
       const categories = [];
       for await (const category of response.data){
         categories.push(category);
-        console.log("Categoria: ",category)
       }
       setCategoryData(categories);
     }catch (e){
