@@ -27,6 +27,7 @@ function App() {
     }
   }
 
+
   useEffect(() => {
     (async ()=>{
       await loadCategories();
@@ -35,7 +36,7 @@ function App() {
 
   return (
     <div className={styles.tableContainer}>
-        <CategoryTable  categoryData={categoryData}/>
+        <CategoryTable  categoryData={categoryData} categoryController={categoryController}/>
     </div>
   );
 }
