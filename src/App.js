@@ -11,6 +11,7 @@ const useStyles = makeStyles(() => ({
 }))
 function App() {
   const [categoryData,setCategoryData] = useState([]);
+  const [detectChange, setDetectChange] = useState(true);
   const categoryController = new CategoryController();
   const styles = useStyles();
   const loadCategories = async () =>{
@@ -32,11 +33,14 @@ function App() {
     (async ()=>{
       await loadCategories();
     })()
-  },[]);
+  },[detectChange]);
 
   return (
     <div className={styles.tableContainer}>
-        <CategoryTable  categoryData={categoryData} categoryController={categoryController}/>
+        <CategoryTable  categoryData={categoryData}
+                        categoryController={categoryController}
+                        detectChange={detectChange}
+                        setDetectChange={setDetectChange}/>
     </div>
   );
 }

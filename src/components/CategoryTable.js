@@ -43,19 +43,31 @@ const useStyles = makeStyles((theme) =>({
 function CategoryTable(props) {
     const [addModalState, setAddModalState] = useState(false);
     const [updateModalState, setUpdateModalState] = useState(false);
-    const [addDataModal,setAddDataModal] = useState({name:''});
-    const [updateDataModal,setUpdateDataModal] = useState({categoryId:0, name:''})
+    const [addDataModal,setAddDataModal] = useState({name:'',categoryId:0});
     const categoryController = new CategoryController();
-    const {categoryData} = props;
+    const {categoryData, setDetectChange,detectChange} = props;
     const styles = useStyles();
 
     const postCategory = async () =>{
         try {
             const response = await categoryController.addCategory(addDataModal);
-            console.log("Respuesta: ", response)
+            console.log("Respuesta: ", response);
         }catch (e){
             console.log("Error: ", e);
         }
+        openCloseInputModal();
+        setDetectChange(!detectChange);
+    }
+    const updateCategory = async () =>{
+        console.log("PUT :"+addDataModal.name)
+        try {
+            const response = await categoryController.updateCategory(addDataModal,addDataModal.categoryId);
+            console.log("Respuesta: ", response);
+        }catch (e){
+            console.log("Error: ", e);
+        }
+        openCloseUpdateModal();
+        setDetectChange(!detectChange);
     }
 
     const openCloseInputModal= () =>{
@@ -67,17 +79,17 @@ function CategoryTable(props) {
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setAddDataModal({
-            name: value
-        });
+        setAddDataModal(prevState => ({
+                ...prevState,
+                [name]: value
+            }
+        ));
         console.log(addDataModal);
     }
     const selectCategory = (data, caso) =>{
-        console.log("CLick",data)
-        setUpdateDataModal(data);
-        if(caso === 'Edit') {
-            setUpdateModalState(true)
-        }
+        console.log("CLick",data);
+        setAddDataModal(data);
+        (caso === 'Edit')&& setUpdateModalState(true);
     }
     const insertBody = (
         <div className={styles.modal}>
@@ -85,19 +97,19 @@ function CategoryTable(props) {
             <TextField name="name" className={styles.inputMaterial} label="Nombre categoria" onChange={handleChange}/>
 
             <div align="right">
-                <Button color="primary" onClick={postCategory}>Add</Button>
-                <Button onClick={openCloseInputModal}>Cancelar</Button>
+                <Button color="primary" onClick={() => postCategory()}>Add</Button>
+                <Button onClick={() => openCloseInputModal()}>Cancelar</Button>
             </div>
         </div>
     )
     const editBody = (
         <div className={styles.modal}>
             <h3>Editar categoria</h3>
-            <TextField name="name" className={styles.inputMaterial} label="Nombre categoria" onChange={handleChange} value={updateDataModal&&updateDataModal.name}/>
+            <TextField name="name" className={styles.inputMaterial} label="Nombre categoria" onChange={handleChange} value={addDataModal&&addDataModal.name}/>
 
             <div align="right">
-                <Button color="primary" onClick={postCategory}>Add</Button>
-                <Button onClick={openCloseUpdateModal}>Cancelar</Button>
+                <Button color="primary" onClick={() =>updateCategory()}>Edit</Button>
+                <Button onClick={() =>openCloseUpdateModal()}>Cancelar</Button>
             </div>
         </div>
     )
@@ -105,7 +117,7 @@ function CategoryTable(props) {
     return (
         <>
             <div className={styles.categoryContainer}>
-                <Button className={styles.buttonAdd} onClick={openCloseInputModal}>Insertar</Button>
+                <Button className={styles.buttonAdd} onClick={() => openCloseInputModal()}>Insertar</Button>
                 <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"50%"}}>
                     <Table >
                         <TableHead style={{width:"100px"}}>
@@ -130,10 +142,10 @@ function CategoryTable(props) {
                     </Table>
                 </TableContainer>
             </div>
-            <Modal open={addModalState} onClose={openCloseInputModal}>
+            <Modal open={addModalState} onClose={ () => openCloseInputModal()}>
                 {insertBody}
             </Modal>
-            <Modal open={updateModalState} onClose={openCloseUpdateModal}>
+            <Modal open={updateModalState} onClose={ () => openCloseUpdateModal()}>
                 {editBody}
             </Modal>
         </>

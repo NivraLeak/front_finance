@@ -35,4 +35,23 @@ export class CategoryController{
         }
     }
 
+    updateCategory = async (category, categoryId) => {
+        try {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const url = `${API_HOST+this.name}/update/${categoryId}`;
+            const raw = JSON.stringify(category);
+
+            const  response = await fetch(url,{
+                method: 'PUT',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            })
+            return response.json();
+        }catch (e){
+            throw e;
+        }
+    }
+
 }
