@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) =>({
         padding:"1em",
         display:"flex",
         position:"relative",
-        width:"100%",
+        width:"50%",
         alignContent:"center",
         alignItems:"center",
         justifyContent:"center"
@@ -41,17 +41,17 @@ const useStyles = makeStyles((theme) =>({
 }));
 
 function CategoryTable(props) {
-    const [modalState, setModalState] = useState(false);
+    const [addModalState, setAddModalState] = useState(false);
+    const [updateModalState, setUpdateModalState] = useState(false);
+    const [addDataModal,setAddDataModal] = useState({name:''});
+    const [updateDataModal,setUpdateDataModal] = useState({categoryId:0, name:''})
     const categoryController = new CategoryController();
-    const [dataModal,setDataModal] = useState({
-        name:''
-    });
     const {categoryData} = props;
     const styles = useStyles();
 
     const postCategory = async () =>{
         try {
-            const response = await categoryController.addCategory(dataModal);
+            const response = await categoryController.addCategory(addDataModal);
             console.log("Respuesta: ", response)
         }catch (e){
             console.log("Error: ", e);
@@ -59,17 +59,26 @@ function CategoryTable(props) {
     }
 
     const openCloseInputModal= () =>{
-        setModalState(!modalState);
+        setAddModalState(!addModalState);
+    }
+    const openCloseUpdateModal= () =>{
+        setUpdateModalState(!updateModalState);
     }
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setDataModal({
+        setAddDataModal({
             name: value
         });
-        console.log(dataModal);
+        console.log(addDataModal);
     }
-
+    const selectCategory = (data, caso) =>{
+        console.log("CLick",data)
+        setUpdateDataModal(data);
+        if(caso === 'Edit') {
+            setUpdateModalState(true)
+        }
+    }
     const insertBody = (
         <div className={styles.modal}>
             <h3>Agregar nueva categoria</h3>
@@ -81,11 +90,23 @@ function CategoryTable(props) {
             </div>
         </div>
     )
+    const editBody = (
+        <div className={styles.modal}>
+            <h3>Editar categoria</h3>
+            <TextField name="name" className={styles.inputMaterial} label="Nombre categoria" onChange={handleChange} value={updateDataModal&&updateDataModal.name}/>
+
+            <div align="right">
+                <Button color="primary" onClick={postCategory}>Add</Button>
+                <Button onClick={openCloseUpdateModal}>Cancelar</Button>
+            </div>
+        </div>
+    )
+
     return (
         <>
             <div className={styles.categoryContainer}>
                 <Button className={styles.buttonAdd} onClick={openCloseInputModal}>Insertar</Button>
-                <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"20%"}}>
+                <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"50%"}}>
                     <Table >
                         <TableHead style={{width:"100px"}}>
                             <TableRow>
@@ -94,13 +115,13 @@ function CategoryTable(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {categoryData.map(consola => (
-                                <TableRow  key={consola.categoryId}>
-                                    <TableCell align={"center"}>{consola.name}</TableCell>
+                            {categoryData.map(data=> (
+                                <TableRow  key={data.categoryId}>
+                                    <TableCell align={"center"}>{data.name}</TableCell>
                                     <TableCell align={"center"}>
-                                        <Edit></Edit>
+                                        <Edit className={styles.icons} onClick={()=>{selectCategory(data,'Edit')}}></Edit>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Delete></Delete>
+                                        <Delete className={styles.icons} ></Delete>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -109,8 +130,11 @@ function CategoryTable(props) {
                     </Table>
                 </TableContainer>
             </div>
-            <Modal open={modalState} onClose={openCloseInputModal}>
+            <Modal open={addModalState} onClose={openCloseInputModal}>
                 {insertBody}
+            </Modal>
+            <Modal open={updateModalState} onClose={openCloseUpdateModal}>
+                {editBody}
             </Modal>
         </>
     );

@@ -1,5 +1,4 @@
 import {API_HOST} from '../utils/Constants';
-import {stringify} from 'flatted';
 
 export class CategoryController{
     constructor() {
@@ -22,9 +21,7 @@ export class CategoryController{
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             const url = `${API_HOST+this.name}/create`;
-            var raw = JSON.stringify(category);
-            console.log("RAW: ", raw)
-            console.log("category: ", category)
+            const raw = JSON.stringify(category);
 
             const  response = await fetch(url,{
                 method: 'POST',
