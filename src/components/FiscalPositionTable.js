@@ -3,7 +3,7 @@ import {Table,TableContainer, TableHead, TableCell,TableBody, TableRow, Modal, B
 import {Edit,Delete} from "@material-ui/icons";
 import {makeStyles} from '@material-ui/core/styles';
 import {FiscalPositionController} from "../api/FiscalPositionController";
-
+import {CategoryController} from "../api/CategoryController";
 
 const useStyles = makeStyles((theme) =>({
     categoryContainer:{
@@ -47,9 +47,11 @@ function FiscalPositionTable(props) {
     const [detectChange, setDetectChange] = useState(true);
     const [addModalState, setAddModalState] = useState(false);
     const [updateModalState, setUpdateModalState] = useState(false);
+    const [updateData, setUpdateData] = useState(null);
     const [addDataModal,setAddDataModal] = useState(null);
     const {fiscalPositionData,loadFiscalPosition} = props;
     const fiscalPositionController = new FiscalPositionController();
+    const categoryController = new CategoryController();
     const styles = useStyles();
     const openCloseInputModal= () =>{
         setAddModalState(!addModalState);
@@ -57,7 +59,7 @@ function FiscalPositionTable(props) {
     const openCloseUpdateModal= () =>{
         setUpdateModalState(!updateModalState);
     }
-    const handleChange = (e) => {
+    const   handleChange = (e) => {
         const {name, value} = e.target;
         setAddDataModal(prevState => ({
                 ...prevState,
@@ -65,21 +67,58 @@ function FiscalPositionTable(props) {
             }
         ));
     }
-    const selectRow = (data, caso) =>{
+    const selectFiscalPosition = (data, caso) =>{
         setAddDataModal(data);
         (caso === 'Edit')&& setUpdateModalState(true);
-    }
+
+}
 
     const addFiscalPosition = async () =>{
         try {
             const response = await fiscalPositionController.addFiscalPosition(addDataModal);
-            console.log("Respuesta add Fiscal Position: ", response);
-            console.log("Add data modal fiscal: ", addDataModal);
+            //console.log("Respuesta add Fiscal Position: ", response);
+            //console.log("Add data modal fiscal: ", addDataModal);
 
         }catch (e){
             console.log("Error: ", e);
         }
         openCloseInputModal();
+        setDetectChange(!detectChange);
+    }
+    const updateFiscalPosition = async () =>{
+        console.log("PUT :",addDataModal)
+        try {
+            categoryController.getCategoryByName(addDataModal.category).then(async value => {
+                console.log("AdDataModal: ", addDataModal);
+                const newData = {
+                    amount: addDataModal.amount,
+                    categoryId: value.data.categoryId,
+                    gdp: addDataModal.gdp,
+                    item: addDataModal.item,
+                    state: addDataModal.state,
+                    yearBalance: addDataModal.yearBalance
+                }
+                const response = await fiscalPositionController.updateFiscalPosition(newData, addDataModal.fiscalPositionId);
+                console.log("New data ", newData);
+                console.log("Response ", response);
+
+            });
+            console.log("fuera: ",updateData)
+
+        }catch (e){
+            console.log("Error: ", e);
+        }
+        openCloseUpdateModal();
+        setDetectChange(!detectChange);
+    }
+
+    const deleteFiscalPosition = async (fiscalPositionId) =>{
+        try {
+            const response = await fiscalPositionController.deleteFiscalPosition(fiscalPositionId);
+            console.log("Respuesta: ", response);
+        }catch (e){
+            console.log("Error: ", e);
+        }
         setDetectChange(!detectChange);
     }
 
@@ -104,6 +143,23 @@ function FiscalPositionTable(props) {
             </div>
         </div>
     )
+    const editBody = (
+        <div className={styles.modal}>
+            <h3>Editar posicion de fiscal</h3>
+            <TextField name="amount" className={styles.inputMaterial} label="Amount" onChange={handleChange} value={addDataModal&&addDataModal.amount}/>
+            <TextField name="gdp" className={styles.inputMaterial} label="Gdp" onChange={handleChange} value={addDataModal&&addDataModal.gdp}/>
+            <TextField name="item" className={styles.inputMaterial} label="Item" onChange={handleChange} value={addDataModal&&addDataModal.item}/>
+            <TextField name="state" className={styles.inputMaterial} label="State" onChange={handleChange} value={addDataModal&&addDataModal.state}/>
+            <TextField name="yearBalance" className={styles.inputMaterial} label="YearBalance" onChange={handleChange} value={addDataModal&&addDataModal.yearBalance}/>
+            <TextField name="categoryId" className={styles.inputMaterial} label="Category" onChange={handleChange} value={addDataModal&&addDataModal.category}/>
+
+            <div align="right">
+                <Button color="primary" onClick={()=>updateFiscalPosition()}  >Edit</Button>
+                <Button onClick={() =>openCloseUpdateModal()}>Cancelar</Button>
+            </div>
+        </div>
+    )
+
 
     return (
         <>
@@ -133,9 +189,9 @@ function FiscalPositionTable(props) {
                                     <TableCell align={"center"}> {data.yearBalance} </TableCell>
                                     <TableCell align={"center"}> {data.category} </TableCell>
                                     <TableCell align={"center"}>
-                                        <Edit className={styles.icons}></Edit>
+                                        <Edit className={styles.icons} onClick={()=>{selectFiscalPosition(data,'Edit')}}></Edit>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Delete className={styles.icons}></Delete>
+                                        <Delete className={styles.icons} onClick={()=>{ deleteFiscalPosition(data.fiscalPositionId)}}></Delete>
                                     </TableCell>
                                 </TableRow>
                             ) )}
@@ -145,6 +201,10 @@ function FiscalPositionTable(props) {
             </div>
             <Modal open={addModalState} onClose={ () => openCloseInputModal()}>
                 {insertBody}
+            </Modal>
+
+            <Modal open={updateModalState} onClose={ () => openCloseUpdateModal()}>
+                {editBody}
             </Modal>
         </>
     );

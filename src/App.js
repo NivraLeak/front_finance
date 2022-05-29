@@ -39,7 +39,7 @@ function App() {
       const listFiscalPositions = [];
       for await (const fiscalPosition of response.data){
         const categoryRes = await categoryController.getCategoryById(fiscalPosition.idCategory);
-        console.log("Categoria res: ", categoryRes.data.name)
+        //console.log("Categoria res: ", categoryRes.data.name)
         listFiscalPositions.push({
           amount: fiscalPosition.amount,
           category: categoryRes.data.name,
@@ -51,7 +51,7 @@ function App() {
         });
       }
       setFiscalPositionData(listFiscalPositions);
-      console.log("Response: ", response)
+      //console.log("Response: ", response)
     }catch (e){
       console.log("Error: ", e);
     }

@@ -74,6 +74,23 @@ export class CategoryController{
         }
     }
 
+    getCategoryByName = async (name) =>{
+        try {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const url = `${API_HOST+this.name}/getByName/${name}`;
+            const  response = await fetch(url,{
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            })
+            return response.json();
+        }catch (e){
+            throw e;
+        }
+    }
+
+
     deleteCategory = async (categoryId) => {
         try {
             const myHeaders = new Headers();

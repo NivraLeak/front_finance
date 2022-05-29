@@ -38,6 +38,9 @@ export class FiscalPositionController {
     }
     updateFiscalPosition = async (fiscalPosition, fiscalPositionId) => {
         try {
+            console.log("Data en controller data: ",fiscalPosition)
+            console.log("Data en controller id: ",fiscalPositionId)
+
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             const url = `${API_HOST+this.name}/update/${fiscalPositionId}`;

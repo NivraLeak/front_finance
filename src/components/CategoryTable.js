@@ -52,7 +52,7 @@ function CategoryTable(props) {
     const addCategory = async () =>{
         try {
             const response = await categoryController.addCategory(addDataModal);
-            console.log("Respuesta add Category: ", response);
+            //console.log("Respuesta add Category: ", response);
         }catch (e){
             console.log("Error: ", e);
         }
@@ -63,7 +63,7 @@ function CategoryTable(props) {
         console.log("PUT :"+addDataModal.name)
         try {
             const response = await categoryController.updateCategory(addDataModal,addDataModal.categoryId);
-            console.log("Respuesta: ", response);
+            //console.log("Respuesta: ", response);
         }catch (e){
             console.log("Error: ", e);
         }
@@ -73,7 +73,7 @@ function CategoryTable(props) {
     const deleteCategory = async (categoryId) =>{
         try {
             const response = await categoryController.deleteCategory(categoryId);
-            console.log("Respuesta: ", response);
+            //console.log("Respuesta: ", response);
         }catch (e){
             console.log("Error: ", e);
         }
