@@ -8,7 +8,10 @@ import FiscalPositionTable from "./components/FiscalPositionTable";
 
 const useStyles = makeStyles(() => ({
   tableContainer:{
-    margin:'1em',
+    display:"flex",
+    margin:"1em",
+    flexDirection:"row",
+    justifyContent:"flex-start",
   }
 }))
 function App() {
@@ -35,9 +38,19 @@ function App() {
       const response = await fiscalPositionController.getAllFiscalPosition();
       const listFiscalPositions = [];
       for await (const fiscalPosition of response.data){
-        listFiscalPositions.push(fiscalPosition);
+        const categoryRes = await categoryController.getCategoryById(fiscalPosition.idCategory);
+        console.log("Categoria res: ", categoryRes.data.name)
+        listFiscalPositions.push({
+          amount: fiscalPosition.amount,
+          category: categoryRes.data.name,
+          gdp: fiscalPosition.gdp,
+          item: fiscalPosition.item,
+          state: fiscalPosition.state,
+          yearBalance: fiscalPosition.yearBalance,
+          fiscalPositionId: fiscalPosition.fiscalPositionId,
+        });
       }
-      setCategoryData(listFiscalPositions);
+      setFiscalPositionData(listFiscalPositions);
       console.log("Response: ", response)
     }catch (e){
       console.log("Error: ", e);
@@ -47,17 +60,14 @@ function App() {
   useEffect(() => {
     (async ()=>{
       await loadCategories();
-      await loadFiscalPosition();
     })()
   },[detectChange]);
 
   return (
     <div className={styles.tableContainer}>
-        <CategoryTable  categoryData={categoryData}
-                        detectChange={detectChange}
-                        setDetectChange={setDetectChange}/>
+        <CategoryTable  categoryData={categoryData} detectChange={detectChange} setDetectChange={setDetectChange}/>
 
-        <FiscalPositionTable fiscalPositionData={fiscalPositionData} />
+        <FiscalPositionTable fiscalPositionData={fiscalPositionData}  loadFiscalPosition={loadFiscalPosition}/>
     </div>
   );
 }

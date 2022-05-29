@@ -7,6 +7,7 @@ export class CategoryController{
         this.addCategory = this.addCategory.bind(this);
         this.updateCategory = this.updateCategory.bind(this);
         this.deleteCategory = this.deleteCategory.bind(this);
+        this.getCategoryById = this.getCategoryById.bind(this);
     }
 
     getAllCategories = async () =>{
@@ -49,6 +50,22 @@ export class CategoryController{
                 method: 'PUT',
                 headers: myHeaders,
                 body: raw,
+                redirect: 'follow'
+            })
+            return response.json();
+        }catch (e){
+            throw e;
+        }
+    }
+
+    getCategoryById = async (categoryId) =>{
+        try {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const url = `${API_HOST+this.name}/get/${categoryId}`;
+            const  response = await fetch(url,{
+                method: 'GET',
+                headers: myHeaders,
                 redirect: 'follow'
             })
             return response.json();

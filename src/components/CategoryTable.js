@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Table,TableContainer, TableHead, TableCell,TableBody, TableRow, Modal, Button,TextField} from '@material-ui/core';
 import {Edit,Delete} from "@material-ui/icons";
 import {makeStyles} from '@material-ui/core/styles';
@@ -6,12 +6,13 @@ import {CategoryController} from "../api/CategoryController";
 const useStyles = makeStyles((theme) =>({
     categoryContainer:{
         padding:"1em",
-        display:"flex",
-        position:"relative",
-        width:"50%",
+        flex:1,
+        width:"100%",
         alignContent:"center",
         alignItems:"center",
-        justifyContent:"center"
+        justifyContent:"center",
+        display:"flex",
+        flexDirection:"column"
     },
     modal: {
         position:'absolute',
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) =>({
         backgroundColor:"black",
         color:"white",
         margin:"1em",
-        padding:"1em"
+        padding:"1em",
     }
 }));
 
@@ -45,7 +46,7 @@ function CategoryTable(props) {
     const [updateModalState, setUpdateModalState] = useState(false);
     const [addDataModal,setAddDataModal] = useState({name:'',categoryId:0});
     const categoryController = new CategoryController();
-    const {categoryData, setDetectChange,detectChange} = props;
+    const {categoryData,setDetectChange,detectChange} = props;
     const styles = useStyles();
 
     const addCategory = async () =>{
@@ -125,7 +126,7 @@ function CategoryTable(props) {
         <>
             <div className={styles.categoryContainer}>
                 <Button className={styles.buttonAdd} onClick={() => openCloseInputModal()}>Insertar</Button>
-                <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"50%"}}>
+                <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"90%"}}>
                     <Table >
                         <TableHead style={{width:"100px"}}>
                             <TableRow>
