@@ -24,7 +24,7 @@ export class FiscalPositionController {
             myHeaders.append("Content-Type", "application/json");
             const url = `${API_HOST+this.name}/create`;
             const raw = JSON.stringify(fiscalPosition);
-
+            console.log("Raw add fiscal position: ", raw)
             const  response = await fetch(url,{
                 method: 'POST',
                 headers: myHeaders,

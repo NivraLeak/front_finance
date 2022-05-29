@@ -47,18 +47,41 @@ function FiscalPositionTable(props) {
     const [detectChange, setDetectChange] = useState(true);
     const [addModalState, setAddModalState] = useState(false);
     const [updateModalState, setUpdateModalState] = useState(false);
-    const [addDataModal,setAddDataModal] = useState({
-        amount: 0,
-        categoryId: 0,
-        gdp: 0,
-        item: '',
-        state: '',
-        yearBalance: 0,
-        fiscalPositionId: 0,
-    });
+    const [addDataModal,setAddDataModal] = useState(null);
     const {fiscalPositionData,loadFiscalPosition} = props;
     const fiscalPositionController = new FiscalPositionController();
     const styles = useStyles();
+    const openCloseInputModal= () =>{
+        setAddModalState(!addModalState);
+    }
+    const openCloseUpdateModal= () =>{
+        setUpdateModalState(!updateModalState);
+    }
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setAddDataModal(prevState => ({
+                ...prevState,
+                [name]: value
+            }
+        ));
+    }
+    const selectRow = (data, caso) =>{
+        setAddDataModal(data);
+        (caso === 'Edit')&& setUpdateModalState(true);
+    }
+
+    const addFiscalPosition = async () =>{
+        try {
+            const response = await fiscalPositionController.addFiscalPosition(addDataModal);
+            console.log("Respuesta add Fiscal Position: ", response);
+            console.log("Add data modal fiscal: ", addDataModal);
+
+        }catch (e){
+            console.log("Error: ", e);
+        }
+        openCloseInputModal();
+        setDetectChange(!detectChange);
+    }
 
     useEffect(() => {
         (async ()=>{
@@ -66,10 +89,26 @@ function FiscalPositionTable(props) {
         })()
     },[detectChange]);
 
+    const insertBody = (
+        <div className={styles.modal}>
+            <h3>Agregar nueva posicion de fiscal</h3>
+            <TextField name="amount" className={styles.inputMaterial} label="Amount" onChange={handleChange}/>
+            <TextField name="gdp" className={styles.inputMaterial} label="Gdp" onChange={handleChange}/>
+            <TextField name="item" className={styles.inputMaterial} label="Item" onChange={handleChange}/>
+            <TextField name="state" className={styles.inputMaterial} label="State" onChange={handleChange}/>
+            <TextField name="yearBalance" className={styles.inputMaterial} label="YearBalance" onChange={handleChange}/>
+            <TextField name="categoryId" className={styles.inputMaterial} label="Category" onChange={handleChange}/>
+            <div align="right">
+                <Button color="primary" onClick={()=>addFiscalPosition()}>Add</Button>
+                <Button onClick={() => openCloseInputModal()}>Cancelar</Button>
+            </div>
+        </div>
+    )
+
     return (
         <>
             <div className={styles.categoryContainer}>
-                <Button className={styles.buttonAdd} onClick={()=>{setDetectChange(!detectChange)}}>Insertar</Button>
+                <Button className={styles.buttonAdd} onClick={()=>{openCloseInputModal()}}>Insertar</Button>
                 <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"90%"}}>
                     <Table>
                         <TableHead style={{width:"100px"}}>
@@ -104,6 +143,9 @@ function FiscalPositionTable(props) {
                     </Table>
                 </TableContainer>
             </div>
+            <Modal open={addModalState} onClose={ () => openCloseInputModal()}>
+                {insertBody}
+            </Modal>
         </>
     );
 }
