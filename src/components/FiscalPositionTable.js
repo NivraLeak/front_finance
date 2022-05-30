@@ -50,9 +50,13 @@ function FiscalPositionTable(props) {
     const [updateModalState, setUpdateModalState] = useState(false);
     const [updateData, setUpdateData] = useState(null);
     const [addDataModal,setAddDataModal] = useState(null);
-    const {fiscalPositionData,loadFiscalPosition} = props;
+    const {fiscalPositionData,loadFiscalPosition, categoryData} = props;
     const fiscalPositionController = new FiscalPositionController();
     const categoryController = new CategoryController();
+
+    const categories = [];
+    categoryData.map(data => categories.push(data.name));
+
     const styles = useStyles();
     const openCloseInputModal= () =>{
         setAddModalState(!addModalState);
@@ -73,7 +77,6 @@ function FiscalPositionTable(props) {
         (caso === 'Edit')&& setUpdateModalState(true);
 
 }
-
     const addFiscalPosition = async () =>{
         try {
             const response = await fiscalPositionController.addFiscalPosition(addDataModal);
@@ -103,13 +106,11 @@ function FiscalPositionTable(props) {
                 console.log("Response ", response);
                 setDetectChange(!detectChange);
             });
-            console.log("fuera: ",updateData)
         }catch (e){
             console.log("Error: ", e);
         }
         openCloseUpdateModal();
     }
-
     const deleteFiscalPosition = async (fiscalPositionId) =>{
         try {
             const response = await fiscalPositionController.deleteFiscalPosition(fiscalPositionId);
@@ -132,9 +133,21 @@ function FiscalPositionTable(props) {
             <TextField name="amount" className={styles.inputMaterial} label="Amount" onChange={handleChange}/>
             <TextField name="gdp" className={styles.inputMaterial} label="Gdp" onChange={handleChange}/>
             <TextField name="item" className={styles.inputMaterial} label="Item" onChange={handleChange}/>
-            <TextField name="state" className={styles.inputMaterial} label="State" onChange={handleChange}/>
+            <Autocomplete
+                disablePortal
+                id="stateId"
+                options={["ACTUAL","REVISED","ESTIMATED"]}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} name="state" label="State"  />}
+            />
             <TextField name="yearBalance" className={styles.inputMaterial} label="YearBalance" onChange={handleChange}/>
-            <TextField name="categoryId" className={styles.inputMaterial} label="Category" onChange={handleChange}/>
+            <Autocomplete
+                disablePortal
+                id="categoryId"
+                options={categories}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} name="category" label="Category"  />}
+            />
             <div align="right">
                 <Button color="primary" onClick={()=>addFiscalPosition()}>Add</Button>
                 <Button onClick={() => openCloseInputModal()}>Cancelar</Button>
@@ -157,16 +170,29 @@ function FiscalPositionTable(props) {
                         ...prevState,
                         state: newValue
                     }))
-                    console.log("Adddatamodal on change: ",newValue)
+                    //console.log("Adddatamodal on change: ",newValue)
                 }}
                 value={addDataModal&&addDataModal.state}
                 renderInput={(params) => <TextField {...params} name="state" label="State"  />}
             />
             <TextField name="yearBalance" className={styles.inputMaterial} label="YearBalance" onChange={handleChange} value={addDataModal&&addDataModal.yearBalance}/>
-            <TextField name="categoryId" className={styles.inputMaterial} label="Category" onChange={handleChange} value={addDataModal&&addDataModal.category}/>
-
+            <Autocomplete
+                disablePortal
+                id="categoryId"
+                options={categories}
+                value={addDataModal&&addDataModal.category}
+                onChange={(event,newValue)=>{
+                    setAddDataModal(prevState => ({
+                        ...prevState,
+                        category: newValue
+                    }))
+                    console.log("Adddatamodal on change edit: ",newValue)
+                }}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} name="category" label="Category"  />}
+            />
             <div align="right">
-                <Button color="primary" onClick={()=>updateFiscalPosition()}  >Edit</Button>
+                <Button color="primary" onClick={()=>updateFiscalPosition()}>Edit</Button>
                 <Button onClick={() =>openCloseUpdateModal()}>Cancelar</Button>
             </div>
         </div>

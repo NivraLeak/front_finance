@@ -67,7 +67,7 @@ function App() {
     <div className={styles.tableContainer}>
         <CategoryTable  categoryData={categoryData} detectChange={detectChange} setDetectChange={setDetectChange}/>
 
-        <FiscalPositionTable fiscalPositionData={fiscalPositionData}  loadFiscalPosition={loadFiscalPosition}/>
+        <FiscalPositionTable categoryData={categoryData} fiscalPositionData={fiscalPositionData}  loadFiscalPosition={loadFiscalPosition}/>
     </div>
   );
 }
