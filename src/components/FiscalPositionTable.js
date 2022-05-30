@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Table,TableContainer, TableHead, TableCell,TableBody, TableRow, Modal, Button,TextField} from '@material-ui/core';
+import Autocomplete from '@mui/material/Autocomplete';
 import {Edit,Delete} from "@material-ui/icons";
 import {makeStyles} from '@material-ui/core/styles';
 import {FiscalPositionController} from "../api/FiscalPositionController";
@@ -59,7 +60,7 @@ function FiscalPositionTable(props) {
     const openCloseUpdateModal= () =>{
         setUpdateModalState(!updateModalState);
     }
-    const   handleChange = (e) => {
+    const handleChange = (e) => {
         const {name, value} = e.target;
         setAddDataModal(prevState => ({
                 ...prevState,
@@ -78,12 +79,11 @@ function FiscalPositionTable(props) {
             const response = await fiscalPositionController.addFiscalPosition(addDataModal);
             //console.log("Respuesta add Fiscal Position: ", response);
             //console.log("Add data modal fiscal: ", addDataModal);
-
         }catch (e){
             console.log("Error: ", e);
         }
-        openCloseInputModal();
         setDetectChange(!detectChange);
+        openCloseInputModal();
     }
     const updateFiscalPosition = async () =>{
         console.log("PUT :",addDataModal)
@@ -101,15 +101,13 @@ function FiscalPositionTable(props) {
                 const response = await fiscalPositionController.updateFiscalPosition(newData, addDataModal.fiscalPositionId);
                 console.log("New data ", newData);
                 console.log("Response ", response);
-
+                setDetectChange(!detectChange);
             });
             console.log("fuera: ",updateData)
-
         }catch (e){
             console.log("Error: ", e);
         }
         openCloseUpdateModal();
-        setDetectChange(!detectChange);
     }
 
     const deleteFiscalPosition = async (fiscalPositionId) =>{
@@ -149,7 +147,21 @@ function FiscalPositionTable(props) {
             <TextField name="amount" className={styles.inputMaterial} label="Amount" onChange={handleChange} value={addDataModal&&addDataModal.amount}/>
             <TextField name="gdp" className={styles.inputMaterial} label="Gdp" onChange={handleChange} value={addDataModal&&addDataModal.gdp}/>
             <TextField name="item" className={styles.inputMaterial} label="Item" onChange={handleChange} value={addDataModal&&addDataModal.item}/>
-            <TextField name="state" className={styles.inputMaterial} label="State" onChange={handleChange} value={addDataModal&&addDataModal.state}/>
+            <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={["ACTUAL","REVISED","ESTIMATED"]}
+                sx={{ width: 300 }}
+                onChange={(event,newValue)=>{
+                    setAddDataModal(prevState => ({
+                        ...prevState,
+                        state: newValue
+                    }))
+                    console.log("Adddatamodal on change: ",newValue)
+                }}
+                value={addDataModal&&addDataModal.state}
+                renderInput={(params) => <TextField {...params} name="state" label="State"  />}
+            />
             <TextField name="yearBalance" className={styles.inputMaterial} label="YearBalance" onChange={handleChange} value={addDataModal&&addDataModal.yearBalance}/>
             <TextField name="categoryId" className={styles.inputMaterial} label="Category" onChange={handleChange} value={addDataModal&&addDataModal.category}/>
 
