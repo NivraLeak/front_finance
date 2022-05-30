@@ -1,5 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {Table,TableContainer, TableHead, TableCell,TableBody, TableRow, Modal, Button,TextField} from '@material-ui/core';
+import React, {useState} from 'react';
+import {
+    Table,
+    TableContainer,
+    TableHead,
+    TableCell,
+    TableBody,
+    TableRow,
+    Modal,
+    Button,
+    TextField,
+    capitalize
+} from '@material-ui/core';
 import {Edit,Delete} from "@material-ui/icons";
 import {makeStyles} from '@material-ui/core/styles';
 import {CategoryController} from "../api/CategoryController";
@@ -17,7 +28,7 @@ const useStyles = makeStyles((theme) =>({
     modal: {
         position:'absolute',
         width:"50%",
-        backgroundColor: "white",
+        backgroundColor: "#8B728E",
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2,4,3),
@@ -35,7 +46,7 @@ const useStyles = makeStyles((theme) =>({
         borderStyle:"solid",
         borderRadius:"25%",
         backgroundColor:"black",
-        color:"white",
+        color:"#694873",
         margin:"1em",
         padding:"1em",
     }
@@ -126,7 +137,7 @@ function CategoryTable(props) {
         <>
             <div className={styles.categoryContainer}>
                 <Button className={styles.buttonAdd} onClick={() => openCloseInputModal()}>Insertar</Button>
-                <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"90%"}}>
+                <TableContainer style={{backgroundColor:"#694873", borderStyle:"solid", width:"90%"}}>
                     <Table >
                         <TableHead style={{width:"100px"}}>
                             <TableRow>
@@ -137,7 +148,7 @@ function CategoryTable(props) {
                         <TableBody>
                             {categoryData.map(data=> (
                                 <TableRow  key={data.categoryId}>
-                                    <TableCell align={"center"}>{data.name}</TableCell>
+                                    <TableCell align={"center"}>{capitalize(data.name)}</TableCell>
                                     <TableCell align={"center"}>
                                         <Edit className={styles.icons} onClick={()=>{selectCategory(data,'Edit')}}></Edit>
                                         &nbsp;&nbsp;&nbsp;&nbsp;

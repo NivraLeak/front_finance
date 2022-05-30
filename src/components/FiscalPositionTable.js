@@ -5,6 +5,7 @@ import {Edit,Delete} from "@material-ui/icons";
 import {makeStyles} from '@material-ui/core/styles';
 import {FiscalPositionController} from "../api/FiscalPositionController";
 import {CategoryController} from "../api/CategoryController";
+import { capitalize } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) =>({
     categoryContainer:{
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) =>({
     modal: {
         position:'absolute',
         width:"50%",
-        backgroundColor: "white",
+        backgroundColor: "#C0E5C8",
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2,4,3),
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) =>({
         borderStyle:"solid",
         borderRadius:"25%",
         backgroundColor:"black",
-        color:"white",
+        color:"#85B79D",
         margin:"1em",
         padding:"1em"
     }
@@ -79,13 +80,24 @@ function FiscalPositionTable(props) {
 }
     const addFiscalPosition = async () =>{
         try {
-            const response = await fiscalPositionController.addFiscalPosition(addDataModal);
+            categoryController.getCategoryByName(addDataModal.category).then(async value => {
+                const newData = {
+                    amount: addDataModal.amount,
+                    categoryId: value.data.categoryId,
+                    gdp: addDataModal.gdp,
+                    item: addDataModal.item,
+                    state: addDataModal.state,
+                    yearBalance: addDataModal.yearBalance
+                }
+                const response = await fiscalPositionController.addFiscalPosition(newData);
+                console.log("Response ", response);
+                setDetectChange(!detectChange);
+            });
             //console.log("Respuesta add Fiscal Position: ", response);
             //console.log("Add data modal fiscal: ", addDataModal);
         }catch (e){
             console.log("Error: ", e);
         }
-        setDetectChange(!detectChange);
         openCloseInputModal();
     }
     const updateFiscalPosition = async () =>{
@@ -138,6 +150,12 @@ function FiscalPositionTable(props) {
                 id="stateId"
                 options={["ACTUAL","REVISED","ESTIMATED"]}
                 sx={{ width: 300 }}
+                onChange={(event,newValue)=>{
+                    setAddDataModal(prevState => ({
+                        ...prevState,
+                        state: newValue
+                    }))
+                }}
                 renderInput={(params) => <TextField {...params} name="state" label="State"  />}
             />
             <TextField name="yearBalance" className={styles.inputMaterial} label="YearBalance" onChange={handleChange}/>
@@ -146,6 +164,12 @@ function FiscalPositionTable(props) {
                 id="categoryId"
                 options={categories}
                 sx={{ width: 300 }}
+                onChange={(event,newValue)=>{
+                    setAddDataModal(prevState => ({
+                        ...prevState,
+                        category: newValue
+                    }))
+                }}
                 renderInput={(params) => <TextField {...params} name="category" label="Category"  />}
             />
             <div align="right">
@@ -170,7 +194,6 @@ function FiscalPositionTable(props) {
                         ...prevState,
                         state: newValue
                     }))
-                    //console.log("Adddatamodal on change: ",newValue)
                 }}
                 value={addDataModal&&addDataModal.state}
                 renderInput={(params) => <TextField {...params} name="state" label="State"  />}
@@ -186,7 +209,6 @@ function FiscalPositionTable(props) {
                         ...prevState,
                         category: newValue
                     }))
-                    console.log("Adddatamodal on change edit: ",newValue)
                 }}
                 sx={{ width: 300 }}
                 renderInput={(params) => <TextField {...params} name="category" label="Category"  />}
@@ -203,16 +225,16 @@ function FiscalPositionTable(props) {
         <>
             <div className={styles.categoryContainer}>
                 <Button className={styles.buttonAdd} onClick={()=>{openCloseInputModal()}}>Insertar</Button>
-                <TableContainer style={{backgroundColor:"gray", borderStyle:"solid", width:"90%"}}>
+                <TableContainer style={{backgroundColor:"#85B79D", borderStyle:"solid", width:"90%"}}>
                     <Table>
                         <TableHead style={{width:"100px"}}>
                             <TableRow>
-                                <TableCell align={"center"}>Amount</TableCell>
-                                <TableCell align={"center"}>GDP</TableCell>
-                                <TableCell align={"center"}>Item</TableCell>
-                                <TableCell align={"center"}>State</TableCell>
                                 <TableCell align={"center"}>Year Balance</TableCell>
+                                <TableCell align={"center"}>Actual/Revised/Estimated</TableCell>
                                 <TableCell align={"center"}>Category </TableCell>
+                                <TableCell align={"center"}>Item</TableCell>
+                                <TableCell align={"center"}>Amount (S$ million)</TableCell>
+                                <TableCell align={"center"}>Percent of gdp</TableCell>
                                 <TableCell align={"center"}>Edit/Delete</TableCell>
                             </TableRow>
                         </TableHead>
@@ -220,12 +242,15 @@ function FiscalPositionTable(props) {
                             {
                                 fiscalPositionData.map(data => (
                                 <TableRow key={data.fiscalPositionId}>
-                                    <TableCell align={"center"}> {data.amount} </TableCell>
-                                    <TableCell align={"center"}> {data.gdp} </TableCell>
-                                    <TableCell align={"center"}> {data.item} </TableCell>
-                                    <TableCell align={"center"}> {data.state} </TableCell>
                                     <TableCell align={"center"}> {data.yearBalance} </TableCell>
-                                    <TableCell align={"center"}> {data.category} </TableCell>
+                                    <TableCell align={"center"}> {data.state.toLowerCase().split(" ").map(word => {
+                                            return word.charAt(0).toUpperCase() + word.slice(1);
+                                        })
+                                        .join(" ")} </TableCell>
+                                    <TableCell align={"center"}> {capitalize(data.category)} </TableCell>
+                                    <TableCell align={"center"}> {capitalize(data.item)} </TableCell>
+                                    <TableCell align={"center"}> {data.amount} </TableCell>
+                                    <TableCell align={"center"}> {data.gdp}% </TableCell>
                                     <TableCell align={"center"}>
                                         <Edit className={styles.icons} onClick={()=>{selectFiscalPosition(data,'Edit')}}></Edit>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
